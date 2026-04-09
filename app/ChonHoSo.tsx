@@ -237,8 +237,6 @@ const styles = StyleSheet.create({
   createBtnText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
   deleteBtn: { borderWidth: 1, borderColor: 'red', borderRadius: 20, padding: 12, alignItems: 'center', marginTop: 8 },
   deleteBtnText: { color: 'red', fontSize: 14, fontWeight: 'bold' },
-  deleteBtn: { borderWidth: 1, borderColor: 'red', borderRadius: 20, padding: 12, alignItems: 'center', marginTop: 8 },
-  deleteBtnText: { color: 'red', fontSize: 14, fontWeight: 'bold' },
   ketQuaBtn: { borderWidth: 1, borderColor: '#1a73e8', borderRadius: 20, padding: 12, alignItems: 'center', marginTop: 8 },
   ketQuaBtnText: { color: '#1a73e8', fontSize: 14, fontWeight: 'bold' },
 });

@@ -25,27 +25,31 @@ export default function LichKhamScreen() {
     finally { setLoading(false); }
   };
 
-  const huyLich = async (id: number, createdAt: string) => {
-    const diff = (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60);
-    if (diff > 5) {
-      const gioDat = new Date(createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-      Alert.alert('Không thể hủy', `Lịch đặt lúc ${gioDat} đã quá 5 giờ, không thể hủy!`);
-      return;
-    }
-    Alert.alert('Hủy lịch', 'Bạn có chắc muốn hủy lịch khám này?', [
-      { text: 'Không', style: 'cancel' },
-      { text: 'Hủy lịch', style: 'destructive', onPress: async () => {
-        try {
-          const token = await AsyncStorage.getItem('token');
-          const res = await fetch(`${API_URL}/api/appointments/${id}/cancel`, {
-            method: 'PUT', headers: { 'Authorization': `Bearer ${token}` },
-          });
-          const data = await res.json();
-          if (data.success) loadLichKham();
-          else Alert.alert('Lỗi', data.message);
-        } catch { Alert.alert('Lỗi', 'Không kết nối được server!'); }
-      }},
-    ]);
+  const huyLich = async (id: number, paymentMethod: string) => {
+    const hoantien = paymentMethod === 'momo'
+      ? 'Vì bạn đã thanh toán qua MoMo, vui lòng liên hệ quầy lễ tân để được hoàn tiền.'
+      : paymentMethod === 'cash'
+      ? 'Vì bạn đã chọn thanh toán tại quầy, vui lòng liên hệ nhân viên để xử lý.'
+      : '';
+
+    Alert.alert(
+      'Hủy lịch khám',
+      `Bạn có chắc muốn hủy lịch khám này?\n\n${hoantien}`,
+      [
+        { text: 'Không', style: 'cancel' },
+        { text: 'Xác nhận hủy', style: 'destructive', onPress: async () => {
+          try {
+            const token = await AsyncStorage.getItem('token');
+            const res = await fetch(`${API_URL}/api/appointments/${id}/cancel`, {
+              method: 'PUT', headers: { 'Authorization': `Bearer ${token}` },
+            });
+            const data = await res.json();
+            if (data.success) loadLichKham();
+            else Alert.alert('Lỗi', data.message);
+          } catch { Alert.alert('Lỗi', 'Không kết nối được server!'); }
+        }},
+      ]
+    );
   };
 
   const formatDate = (d: string) => {
@@ -118,7 +122,7 @@ export default function LichKhamScreen() {
                 )}
 
                 {item.status === 'waiting' && (
-                  <TouchableOpacity style={styles.cancelBtn} onPress={() => huyLich(item.id, item.created_at)}>
+                  <TouchableOpacity style={styles.cancelBtn} onPress={() => huyLich(item.id, item.payment_method)}>
                     <Text style={styles.cancelText}>Hủy lịch</Text>
                   </TouchableOpacity>
                 )}

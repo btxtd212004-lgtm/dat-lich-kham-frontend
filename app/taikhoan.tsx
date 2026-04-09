@@ -22,7 +22,7 @@ useEffect(() => {
     const userStr = await AsyncStorage.getItem('user');
     if (userStr) {
       const user = JSON.parse(userStr);
-      setUserName(user.phone || '');
+      setUserName(user.full_name || user.phone || '');
     }
   };
   loadUser();
