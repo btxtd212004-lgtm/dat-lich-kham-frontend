@@ -34,6 +34,7 @@ export default function ThanhToanScreen() {
           schedule_id: parseInt(scheduleId),
           patient_notes: '',
           profile_id: parseInt(profileId),
+          payment_method: selected === 'momo' ? 'momo' : 'cash',
         }),
       });
       const data = await res.json();
