@@ -111,7 +111,7 @@ export default function ChonHoSoScreen() {
                     style={styles.selectBtn}
                     onPress={() =>
                       router.push({
-                        pathname: "/ChiTietHoSo",params: { profileId: profile.id },
+                        pathname: "/ChiTietHoSo",params: { profile_id: profile.id },
                       })
                     }
                   >
