@@ -101,7 +101,7 @@ export default function ChonHoSoScreen() {
                 {isDatLich ? (
                   <TouchableOpacity
                     style={styles.selectBtn}
-                    onPress={() => router.push("/XacNhan")}
+                    onPress={() => router.push({ pathname: "/XacNhan", params: { profile_id: profile.id } })}
                   >
                     <Text style={styles.selectBtnText}>Chọn hồ sơ này</Text>
                   </TouchableOpacity>
@@ -129,7 +129,7 @@ export default function ChonHoSoScreen() {
                         { text: 'Hủy', style: 'cancel' },
                         { text: 'Xóa', style: 'destructive', onPress: async () => {
                           const token = await AsyncStorage.getItem('token');
-                          const res = await fetch(`${API_URL}/api/auth/profile/${profile.id}`, {
+                          const res = await fetch(`${API_URL}/api/auth/profiles/${profile.id}`, {
                             method: 'DELETE',
                             headers: { 'Authorization': `Bearer ${token}` },
                           });

@@ -31,7 +31,7 @@ export default function ChiTietHoSoScreen() {
       });
       const data = await res.json();
       if (data.success) {
-        setProfile(data.data.profile);
+        setProfile(data.data.profiles?.[0]);
       }
     } catch (err) {
       console.log(err);
