@@ -314,12 +314,12 @@ useEffect(() => {
   </Text>
 ) : (
   <>
-    {schedules.filter(s => parseInt(s.start_time.split(':')[0]) < 12 && s.available_slots > 0).length > 0 && (
+    {schedules.filter(s => parseInt(s.start_time.split(':')[0]) < 12 && (s.max_patients - s.booked_count) > 0).length > 0 && (
       <>
         <Text style={styles.buoiTitle}>Buổi sáng</Text>
         <View style={styles.gioGrid}>
           {schedules
-            .filter(s => parseInt(s.start_time.split(':')[0]) < 12 && s.available_slots > 0)
+            .filter(s => parseInt(s.start_time.split(':')[0]) < 12 && (s.max_patients - s.booked_count) > 0)
             .map(s => (
               <TouchableOpacity
                 key={s.id}
@@ -337,7 +337,7 @@ useEffect(() => {
                   {s.start_time.slice(0,5)} - {s.end_time.slice(0,5)}
                 </Text>
                 <Text style={{ fontSize: 11, color: '#1a73e8' }}>
-                  Còn {s.available_slots} chỗ
+                  Còn {Number(s.max_patients) - Number(s.booked_count)} chỗ
                 </Text>
               </TouchableOpacity>
             ))}
@@ -345,12 +345,12 @@ useEffect(() => {
       </>
     )}
 
-    {schedules.filter(s => parseInt(s.start_time.split(':')[0]) >= 12 && s.available_slots > 0).length > 0 && (
+    {schedules.filter(s => parseInt(s.start_time.split(':')[0]) >= 12 && (s.max_patients - s.booked_count) > 0).length > 0 && (
       <>
         <Text style={styles.buoiTitle}>Buổi chiều</Text>
         <View style={styles.gioGrid}>
           {schedules
-            .filter(s => parseInt(s.start_time.split(':')[0]) >= 12 && s.available_slots > 0)
+            .filter(s => parseInt(s.start_time.split(':')[0]) >= 12 && (s.max_patients - s.booked_count) > 0)
             .map(s => (
               <TouchableOpacity
                 key={s.id}
@@ -368,7 +368,7 @@ useEffect(() => {
                   {s.start_time.slice(0,5)} - {s.end_time.slice(0,5)}
                 </Text>
                 <Text style={{ fontSize: 11, color: '#1a73e8' }}>
-                  Còn {s.available_slots} chỗ
+                  Còn {s.max_patients - s.booked_count} chỗ
                 </Text>
               </TouchableOpacity>
             ))}
@@ -492,7 +492,7 @@ useEffect(() => {
             style={{ padding: 12, alignItems: 'center' }}
             onPress={() => {
               if (selectingYear) {
-                setYear(item);
+                setYear(Number(item));
                 setSelectingYear(false);
               } else {
                 setMonth(index);
