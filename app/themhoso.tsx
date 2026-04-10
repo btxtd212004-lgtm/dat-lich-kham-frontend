@@ -135,23 +135,21 @@ export default function ThemHoSoScreen() {
           ? `${parts[2]}-${parts[1]}-${parts[0]}`
           : dateOfBirth;
 
-      const res = await fetch(`${API_URL}/api/auth/profile`, {
-        method: "PUT",
+      const url = isEdit
+        ? `${API_URL}/api/auth/profiles/${profileId}`
+        : `${API_URL}/api/auth/profiles`;
+
+      const res = await fetch(url, {
+        method: isEdit ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          profile_id: isEdit ? profileId : null,
           full_name: fullName,
           date_of_birth: formattedDate,
           gender,
-          insurance_code: insuranceCode,
-          cccd,
-          ethnicity,
-          occupation,
-          height: height ? parseFloat(height) : null,
-          weight: weight ? parseFloat(weight) : null,
+          insurance_number: insuranceCode,
           address,
         }),
       });
