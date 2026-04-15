@@ -150,6 +150,11 @@ export default function ThemHoSoScreen() {
           date_of_birth: formattedDate,
           gender,
           insurance_number: insuranceCode,
+          cccd,
+          ethnicity,
+          occupation,
+          height: height ? parseFloat(height) : null,
+          weight: weight ? parseFloat(weight) : null,
           address,
         }),
       });

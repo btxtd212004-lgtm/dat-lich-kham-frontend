@@ -86,7 +86,7 @@ export default function LoginScreen() {
         <Text style={styles.label}>Mật khẩu</Text>
         <View style={styles.passwordRow}>
           <TextInput
-            style={[styles.input, { flex: 1, marginBottom: 0 }]}
+            style={[styles.input, { flex: 1, marginBottom: 0, color: '#333'}]}
             placeholder="Nhập mật khẩu"
             secureTextEntry={!showPassword}
             value={password}

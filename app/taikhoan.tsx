@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   menuIcon: { fontSize: 22, marginRight: 14 },
   menuLabel: { flex: 1, fontSize: 15, color: '#333' },
   arrow: { fontSize: 20, color: '#ccc' },
-  tabBar: { flexDirection: 'row', backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#eee', paddingVertical: 8 },
+  tabBar: { flexDirection: 'row', backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#eee', paddingVertical: 8, paddingBottom: 20 },
   tabItem: { flex: 1, alignItems: 'center' },
   tabIcon: { fontSize: 22 },
   tabText: { fontSize: 11, color: '#999', marginTop: 2 },

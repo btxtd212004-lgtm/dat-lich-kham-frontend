@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   newsText: { fontSize: 14, color: '#333', marginBottom: 4 },
   newsDate: { fontSize: 12, color: '#999' },
   emptyNews: { textAlign: 'center', color: '#999', marginTop: 10, marginBottom: 10 },
-  tabBar: { flexDirection: 'row', backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#eee', paddingVertical: 8 },
+  tabBar: { flexDirection: 'row', backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#eee', paddingVertical: 8, paddingBottom: 20 },
   tabItem: { flex: 1, alignItems: 'center' },
   tabIcon: { fontSize: 22 },
   tabText: { fontSize: 11, color: '#999', marginTop: 2 },

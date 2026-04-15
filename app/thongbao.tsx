@@ -19,7 +19,16 @@ export default function LichKhamScreen() {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       const data = await res.json();
-      if (data.success) setLichKhams(data.data);
+      if (data.success) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const filtered = data.data.filter((item: any) => {
+          const itemDate = new Date(item.date);
+          itemDate.setHours(0, 0, 0, 0);
+          return itemDate >= today;
+        });
+        setLichKhams(filtered);
+      }
       else setLichKhams([]);
     } catch { setLichKhams([]); }
     finally { setLoading(false); }
