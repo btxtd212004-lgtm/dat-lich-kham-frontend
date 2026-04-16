@@ -57,12 +57,27 @@ export default function DoctorScreen() {
     ]);
   };
 
-  const openRecord = (appt: any) => {
+  const openRecord = async (appt: any) => {
     setRecordAppt(appt);
     setDiagnosis(appt.diagnosis || '');
     setPrescription('');
     setRecordNotes('');
     setShowRecord(true);
+    // Load đầy đủ bệnh án nếu đã có
+    if (appt.record_id) {
+      try {
+        const token = await getToken();
+        const res = await fetch(`${API_URL}/api/doctor/appointments/${appt.id}/record`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (data.success) {
+          setDiagnosis(data.data.diagnosis || '');
+          setPrescription(data.data.prescription || '');
+          setRecordNotes(data.data.notes || '');
+        }
+      } catch {}
+    }
   };
 
   const saveRecord = async () => {
