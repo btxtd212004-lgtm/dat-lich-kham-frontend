@@ -139,6 +139,10 @@ export default function ThemHoSoScreen() {
         ? `${API_URL}/api/auth/profiles/${profileId}`
         : `${API_URL}/api/auth/profiles`;
 
+      const url = isEdit
+        ? `${API_URL}/api/auth/profiles/${profileId}`
+        : `${API_URL}/api/auth/profiles`;
+
       const res = await fetch(url, {
         method: isEdit ? "PUT" : "POST",
         headers: {
@@ -160,13 +164,9 @@ export default function ThemHoSoScreen() {
       });
       const data = await res.json();
       if (data.success) {
-        Alert.alert(
-          "Thành công",
-          isEdit ? "Cập nhật hồ sơ thành công!" : "Tạo hồ sơ thành công!",
-          [{ text: "OK", onPress: () => router.back() }],
-        );
+        router.back();
       } else {
-        Alert.alert("Lỗi", data.message);
+        Alert.alert("Lỗi", data.message || "Thất bại!");
       }
     } catch (err) {
       Alert.alert("Lỗi", "Không kết nối được server!");

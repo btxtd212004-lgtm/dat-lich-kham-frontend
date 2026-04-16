@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
@@ -13,6 +13,7 @@ import { API_URL } from "../constants/api";
 
 export default function ChiTietHoSoScreen() {
   const router = useRouter();
+  const { profileId } = useLocalSearchParams<{ profileId: string }>();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -31,7 +32,10 @@ export default function ChiTietHoSoScreen() {
       });
       const data = await res.json();
       if (data.success) {
-        setProfile(data.data.profiles?.[0]);
+        const found = profileId
+          ? data.data.profiles?.find((p: any) => String(p.id) === String(profileId))
+          : data.data.profiles?.[0];
+        setProfile(found);
       }
     } catch (err) {
       console.log(err);

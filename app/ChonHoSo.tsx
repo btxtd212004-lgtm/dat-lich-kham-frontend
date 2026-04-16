@@ -155,7 +155,7 @@ export default function ChonHoSoScreen() {
             </Text>
             <TouchableOpacity
               style={styles.createBtn}
-              onPress={() => router.push("/themhoso")}
+              onPress={() => router.push({ pathname: "/themhoso", params: { mode: "edit", profileId: profile.id } })}
             >
               <Text style={styles.createBtnText}>Tạo hồ sơ mới</Text>
             </TouchableOpacity>
