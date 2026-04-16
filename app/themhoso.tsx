@@ -139,10 +139,6 @@ export default function ThemHoSoScreen() {
         ? `${API_URL}/api/auth/profiles/${profileId}`
         : `${API_URL}/api/auth/profiles`;
 
-      const url = isEdit
-        ? `${API_URL}/api/auth/profiles/${profileId}`
-        : `${API_URL}/api/auth/profiles`;
-
       const res = await fetch(url, {
         method: isEdit ? "PUT" : "POST",
         headers: {
