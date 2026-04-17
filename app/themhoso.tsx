@@ -63,7 +63,7 @@ export default function ThemHoSoScreen() {
         setProfileId(p.id);
         setFullName(p.full_name || "");
         setGender(p.gender || "male");
-        setInsuranceCode(p.insurance_code || "");
+        setInsuranceCode(p.insurance_number || "");
         setCccd(p.cccd || "");
         setEthnicity(p.ethnicity || "");
         setOccupation(p.occupation || "");
