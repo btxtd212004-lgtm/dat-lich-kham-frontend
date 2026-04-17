@@ -146,7 +146,7 @@ export default function ChiTietHoSoScreen() {
           <View style={styles.row}>
             <Text style={styles.label}>Mã bảo hiểm</Text>
             <Text style={styles.value}>
-              {profile?.insurance_code || "Chưa cập nhật"}
+              {profile?.insurance_number || "Chưa cập nhật"}
             </Text>
           </View>
         </View>

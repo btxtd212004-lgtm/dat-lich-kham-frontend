@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   emptyDesc: { fontSize: 14, color: '#666', marginBottom: 24 },
   datLichBtn: { backgroundColor: '#1a73e8', padding: 16, borderRadius: 10, paddingHorizontal: 32 },
   datLichText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  tabBar: { flexDirection: 'row', backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#eee', paddingVertical: 8, paddingBottom: 20. },
+  tabBar: { flexDirection: 'row', backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#eee', paddingVertical: 8, paddingBottom: 20 },
   tabItem: { flex: 1, alignItems: 'center' },
   tabIcon: { fontSize: 22 },
   tabText: { fontSize: 11, color: '#999', marginTop: 2 },

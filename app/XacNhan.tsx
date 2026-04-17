@@ -75,7 +75,7 @@ export default function XacNhanScreen() {
             <View style={styles.row}><Text style={styles.label}>Ngày sinh</Text><Text style={styles.value}>{formatDate(profile?.date_of_birth)}</Text></View>
             <View style={styles.row}><Text style={styles.label}>Giới tính</Text><Text style={styles.value}>{profile?.gender === 'male' ? 'Nam' : profile?.gender === 'female' ? 'Nữ' : 'Chưa cập nhật'}</Text></View>
             <View style={styles.row}><Text style={styles.label}>CMND/CCCD</Text><Text style={styles.value}>{profile?.cccd || 'Chưa cập nhật'}</Text></View>
-            <View style={styles.row}><Text style={styles.label}>Mã BHYT</Text><Text style={styles.value}>{profile?.insurance_code || 'Chưa cập nhật'}</Text></View>
+            <View style={styles.row}><Text style={styles.label}>Mã BHYT</Text><Text style={styles.value}>{profile?.insurance_number || 'Chưa cập nhật'}</Text></View>
             <View style={styles.row}><Text style={styles.label}>Nghề nghiệp</Text><Text style={styles.value}>{profile?.occupation || 'Chưa cập nhật'}</Text></View>
             <View style={styles.row}><Text style={styles.label}>Số điện thoại</Text><Text style={styles.value}>{user?.phone || 'Chưa cập nhật'}</Text></View>
             <View style={styles.row}><Text style={styles.label}>Địa chỉ</Text><Text style={styles.value}>{profile?.address || 'Chưa cập nhật'}</Text></View>
