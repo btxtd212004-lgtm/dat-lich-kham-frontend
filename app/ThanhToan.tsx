@@ -38,7 +38,7 @@ export default function ThanhToanScreen() {
       });
       const data = await res.json();
       if (data.success) {
-        return data.data.queueNumber;
+        return { id: data.data.id, queueNumber: data.data.queueNumber };
       } else {
         Alert.alert('Lỗi', data.message);
         return null;
@@ -118,12 +118,13 @@ export default function ThanhToanScreen() {
         style={[styles.confirmBtn, (!selected || loading) && styles.confirmBtnDisabled]}
         disabled={!selected || loading}
         onPress={async () => {
-          const queueNumber = await datLich();
-          if (!queueNumber) return;
-        router.push({
-          pathname: '/MomoPay',
-          params: { queueNumber, khoa, ngay, gio, buoi, gia, profileId, phuongThuc: selected }
-        });
+          const result = await datLich();
+          if (!result) return;
+          const { id: appointmentId, queueNumber } = result;
+          router.push({
+            pathname: '/MomoPay',
+            params: { queueNumber, appointmentId, khoa, ngay, gio, buoi, gia, profileId, phuongThuc: selected }
+          });
         }}>
         <Text style={styles.confirmText}>{loading ? 'Đang xử lý...' : 'XÁC NHẬN THANH TOÁN'}</Text>
       </TouchableOpacity>

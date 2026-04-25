@@ -101,7 +101,7 @@ export default function ChonHoSoScreen() {
                 {isDatLich ? (
                   <TouchableOpacity
                     style={styles.selectBtn}
-                    onPress={() => router.push({ pathname: "/XacNhan", params: { profile_id: profile.id } })}
+                    onPress={() => router.push({ pathname: "/XacNhan", params: { profileId: profile.id } })}
                   >
                     <Text style={styles.selectBtnText}>Chọn hồ sơ này</Text>
                   </TouchableOpacity>

@@ -77,18 +77,17 @@ export default function ThemHoSoScreen() {
         }
         if (p.address) {
           const parts = p.address.split(", ");
-          const tinhName = parts.pop();
-          const xaName = parts.pop();
-          const street = parts.join(", ");
-
-          setStreetAddress(street);
+          // Format: "số nhà/đường, Phường/Xã, Tỉnh/TP"
           if (parts.length >= 3) {
-            setStreetAddress(parts[0]);
-            const tinh = danhSachTinh.find((t) => t.ten === parts[2]);
+            const tinhName = parts[parts.length - 1];
+            const xaName = parts[parts.length - 2];
+            const street = parts.slice(0, parts.length - 2).join(", ");
+            setStreetAddress(street);
+            const tinh = danhSachTinh.find((t) => t.ten === tinhName);
             if (tinh) {
               setSelectedTinh(tinh);
               const xa = (danhSachXa[tinh.id] || []).find(
-                (x: any) => x.ten === parts[1],
+                (x: any) => x.ten === xaName,
               );
               if (xa) setSelectedXa(xa);
             }

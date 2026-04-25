@@ -5,6 +5,18 @@ import { API_URL } from '../constants/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
+import { requestNotificationPermission } from './notificationHelper';
+
+// Cấu hình hiển thị thông báo khi app đang mở (đặt ở ngoài component)
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -66,6 +78,7 @@ export default function LoginScreen() {
         await AsyncStorage.setItem('token', data.data.token);
         await AsyncStorage.setItem('user', JSON.stringify(data.data.user));
         registerPushToken(data.data.token);
+        requestNotificationPermission(); // Xin quyền thông báo cục bộ
         // Điều hướng theo role
         const role = data.data.user.role;
         if (role === 'admin') router.replace('/admin');

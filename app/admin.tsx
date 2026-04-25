@@ -494,20 +494,35 @@ export default function AdminScreen() {
               {doctors.map(d => (
                 <TouchableOpacity key={d.id} style={[styles.deptItem, sDoctorId === String(d.id) && styles.deptItemActive]}
                   onPress={() => { setSDoctorId(String(d.id)); setSDeptId(String(d.department_id)); }}>
-                  <Text style={[styles.deptItemText, sDoctorId === String(d.id) && styles.deptItemTextActive]}>{d.full_name}</Text>
+                  <Text style={[styles.deptItemText, sDoctorId === String(d.id) && styles.deptItemTextActive]}>
+                    {d.full_name}
+                    {d.department_name ? ` — ${d.department_name}` : ''}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
 
             <Text style={styles.fieldLabel}>Chuyên khoa *</Text>
-            <View style={styles.deptList}>
-              {departments.map(d => (
-                <TouchableOpacity key={d.id} style={[styles.deptItem, sDeptId === String(d.id) && styles.deptItemActive]}
-                  onPress={() => setSDeptId(String(d.id))}>
-                  <Text style={[styles.deptItemText, sDeptId === String(d.id) && styles.deptItemTextActive]}>{d.name}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            {sDoctorId ? (
+              // Khi đã chọn bác sĩ → hiện khoa của bác sĩ đó, không cho đổi
+              (() => {
+                const selectedDoc = doctors.find(d => String(d.id) === sDoctorId);
+                return (
+                  <View style={[styles.deptItem, styles.deptItemActive, { marginBottom: 4 }]}>
+                    <Text style={[styles.deptItemText, styles.deptItemTextActive]}>
+                      {selectedDoc?.department_name || 'Không rõ khoa'}
+                    </Text>
+                    <Text style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>
+                      🔒 Tự động theo bác sĩ đã chọn
+                    </Text>
+                  </View>
+                );
+              })()
+            ) : (
+              <View style={[styles.deptItem, { opacity: 0.4 }]}>
+                <Text style={styles.deptItemText}>← Chọn bác sĩ trước</Text>
+              </View>
+            )}
 
             <Text style={styles.fieldLabel}>Ngày làm việc * (YYYY-MM-DD)</Text>
             <TextInput style={styles.fieldInput} value={sDate} onChangeText={setSDate} placeholder="2026-04-10" />

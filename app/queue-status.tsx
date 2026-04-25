@@ -99,11 +99,20 @@ export default function QueueStatusScreen() {
             </View>
 
             {/* Số người chờ trước */}
-            {isWaiting && (
+            {isWaiting && remaining > 0 && (
               <View style={styles.waitBox}>
                 <Text style={styles.waitNum}>{remaining}</Text>
                 <Text style={styles.waitLabel}>người trước bạn</Text>
-                <Text style={styles.waitNote}>~ {remaining * 10} phút dự kiến</Text>
+                {current > 0 && (
+                  <Text style={styles.waitNote}>~ {remaining * 10} phút dự kiến</Text>
+                )}
+              </View>
+            )}
+
+            {isWaiting && remaining === 0 && current === 0 && (
+              <View style={styles.waitBox}>
+                <Text style={styles.waitLabel}>Hàng đợi chưa bắt đầu</Text>
+                <Text style={styles.waitNote}>Vui lòng có mặt đúng giờ</Text>
               </View>
             )}
 

@@ -4,12 +4,16 @@ import { useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../constants/api';
 
-const today = new Date();
 const dayNames = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
-const dateStr = `${dayNames[today.getDay()]}, ${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+
+const getDateStr = () => {
+  const now = new Date();
+  return `${dayNames[now.getDay()]}, ${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
+};
 
 export default function HomeScreen() {
   const router = useRouter();
+  const [dateStr, setDateStr] = useState(getDateStr());
   const [userName, setUserName] = useState('');
   const [nearestAppt, setNearestAppt] = useState<any>(null);
   const [queueInfo, setQueueInfo] = useState<any>(null);
@@ -59,6 +63,7 @@ export default function HomeScreen() {
 
   useFocusEffect(useCallback(() => {
     loadData();
+    setDateStr(getDateStr());
     const backAction = () => {
       Alert.alert('Thoát ứng dụng', 'Bạn có muốn thoát không?', [
         { text: 'Huỷ', style: 'cancel' },

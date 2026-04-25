@@ -9,6 +9,7 @@ export default function XacNhanScreen() {
   const [profile, setProfile] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const { profileId, scheduleId, khoa, dichVu, ngay, gio, buoi, gia } = useLocalSearchParams<{
   profileId: string;
   scheduleId: string;
@@ -94,11 +95,19 @@ export default function XacNhanScreen() {
         </ScrollView>
       )}
 
-      <TouchableOpacity style={styles.datKhamBtn} onPress={() => router.push({
-        pathname: '/ThanhToan',
-        params: { scheduleId, profileId, khoa, dichVu, ngay, gio, buoi, gia }
-      })}>
-        <Text style={styles.datKhamText}>ĐẶT KHÁM</Text>
+      <TouchableOpacity
+        style={[styles.datKhamBtn, submitting && { backgroundColor: '#aaa' }]}
+        disabled={submitting}
+        onPress={() => {
+          setSubmitting(true);
+          router.push({
+            pathname: '/ThanhToan',
+            params: { scheduleId, profileId, khoa, dichVu, ngay, gio, buoi, gia }
+          });
+          // Reset sau 1s phòng trường hợp người dùng back lại
+          setTimeout(() => setSubmitting(false), 1000);
+        }}>
+        <Text style={styles.datKhamText}>{submitting ? 'Đang xử lý...' : 'ĐẶT KHÁM'}</Text>
       </TouchableOpacity>
          </View>
        );

@@ -63,6 +63,13 @@ useEffect(() => {
   const [showCKModal, setShowCKModal] = useState(false);
   const [searchCK, setSearchCK] = useState('');
 
+  // Tự động load lịch khi đã có cả chuyên khoa lẫn ngày (dù chọn theo thứ tự nào)
+  useEffect(() => {
+    if (selectedCK && selectedNgay) {
+      loadSchedules(selectedCK.id, selectedNgay);
+    }
+  }, [selectedCK, selectedNgay]);
+
   const [expandCK, setExpandCK] = useState(true);
   const [expandDV, setExpandDV] = useState(true);
   const [expandNgay, setExpandNgay] = useState(true);
@@ -220,10 +227,6 @@ useEffect(() => {
             <Text style={styles.arrow}>{expandNgay ? '▲' : '▼'}</Text>
           </TouchableOpacity>
           
-        <Text style={{ fontSize: 12, color: '#e8a01a', marginBottom: 8 }}>
-          ⚠️ Vui lòng đặt lịch trước ít nhất 1 ngày
-        </Text>
-
           {expandNgay ? (
             selectedNgay ? (
               <TouchableOpacity style={styles.selectedItem} onPress={() => setSelectedNgay('')}>
@@ -232,6 +235,9 @@ useEffect(() => {
               </TouchableOpacity>
             ) : (
               <View style={styles.calendar}>
+                <Text style={{ fontSize: 12, color: '#e8a01a', marginBottom: 8 }}>
+                  ⚠️ Vui lòng đặt lịch trước ít nhất 1 ngày
+                </Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
   
               <TouchableOpacity onPress={() => {
@@ -274,7 +280,7 @@ useEffect(() => {
                       year === today.getFullYear();
                     return (
                       <TouchableOpacity key={day} style={[styles.dayCell, !valid && styles.disabledDay]}
-                        onPress={() => { if (valid) { setSelectedNgay(dateStr); setExpandNgay(false); if (selectedCK) loadSchedules(selectedCK.id, dateStr); } }} disabled={!valid}>
+                        onPress={() => { if (valid) { setSelectedNgay(dateStr); setExpandNgay(false); } }} disabled={!valid}>
                         <Text style={[styles.dayText, isToday && { textDecorationLine: 'underline' }, !valid && styles.disabledDayText]}>{day}</Text>
                       </TouchableOpacity>
                     );

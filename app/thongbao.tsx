@@ -3,6 +3,7 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { useState, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../constants/api';
+import { cancelAppointmentReminder } from './notificationHelper';
 
 export default function LichKhamScreen() {
   const router = useRouter();
@@ -28,6 +29,7 @@ export default function LichKhamScreen() {
 
   const upcomingList = lichKhams.filter((item: any) => {
     if (item.status === 'cancelled') return false;
+    if (item.status === 'done') return false;
     const itemDate = new Date(item.date);
     itemDate.setHours(0, 0, 0, 0);
     const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -36,6 +38,7 @@ export default function LichKhamScreen() {
 
   const historyList = lichKhams.filter((item: any) => {
     if (item.status === 'cancelled') return true;
+    if (item.status === 'done') return true;
     const itemDate = new Date(item.date);
     itemDate.setHours(23, 59, 59, 999);
     return itemDate < new Date();
@@ -62,8 +65,10 @@ export default function LichKhamScreen() {
               method: 'PUT', headers: { 'Authorization': `Bearer ${token}` },
             });
             const data = await res.json();
-            if (data.success) loadLichKham();
-            else Alert.alert('Không thể hủy', data.message);
+            if (data.success) {
+              await cancelAppointmentReminder(id); // Hủy thông báo nhắc nhở
+              loadLichKham();
+            } else Alert.alert('Không thể hủy', data.message);
           } catch { Alert.alert('Lỗi', 'Không kết nối được server!'); }
         }},
       ]

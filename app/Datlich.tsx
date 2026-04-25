@@ -27,7 +27,7 @@ export default function DatLichScreen() {
               <Text style={styles.serviceText}>ĐẶT KHÁM NGOÀI GIỜ</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => { setShowModal(false); router.back(); }}>
+            <TouchableOpacity onPress={() => router.back()}>
               <Text style={styles.cancelText}>Hủy</Text>
             </TouchableOpacity>
           </View>

@@ -5,10 +5,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from 'expo-router';
 import { API_URL } from '../constants/api';
 import * as Calendar from 'expo-calendar';
+import { scheduleAppointmentReminder } from './notificationHelper';
 
 export default function MomoPayScreen() {
   const router = useRouter();
-  const { queueNumber, khoa, ngay, gio, buoi, gia, profileId, phuongThuc } = useLocalSearchParams<{
+  const { queueNumber, khoa, ngay, gio, buoi, gia, profileId, phuongThuc, appointmentId } = useLocalSearchParams<{
     queueNumber: string;
     khoa: string;
     ngay: string;
@@ -17,6 +18,7 @@ export default function MomoPayScreen() {
     gia: string;
     profileId: string;
     phuongThuc: string;
+    appointmentId: string;
   }>();
 
   const [profile, setProfile] = useState<any>(null);
@@ -150,16 +152,32 @@ export default function MomoPayScreen() {
         </ScrollView>
       )}
 
-      <TouchableOpacity style={styles.payBtn} onPress={() => {
-  Alert.alert('Thanh toán thành công! 🎉', `Số thứ tự: #${queueNumber}\nVui lòng đến đúng giờ!`, [
-    { text: 'Về trang chủ', onPress: () => router.push('/home') },
-    { text: '📅 Thêm vào lịch', onPress: async () => {
-      await themVaoLich();
-      router.push('/home');
-    }},
-  ]);
+      <TouchableOpacity style={styles.payBtn} onPress={async () => {
+  // Lên lịch thông báo nhắc trước 1 tiếng
+  const notifScheduled = await scheduleAppointmentReminder({
+    appointmentId: appointmentId || queueNumber,
+    ngay: ngay as string,
+    gio: gio as string,
+    khoa: khoa as string,
+    queueNumber: queueNumber as string,
+  });
+
+  const notifMsg = notifScheduled
+    ? '\n\n🔔 Đã bật nhắc nhở trước 1 tiếng!'
+    : '';
+
+  Alert.alert(
+    'Thanh toán thành công! 🎉',
+    `Số thứ tự: #${queueNumber}\nVui lòng đến đúng giờ!${notifMsg}`,
+    [
+      { text: 'Về trang chủ', onPress: () => router.push('/home') },
+      { text: '📅 Thêm vào lịch', onPress: () => {
+        themVaoLich().then(() => router.push('/home'));
+      }},
+    ]
+  );
 }}>
-        <Text style={styles.payText}>THANH TOÁN</Text>
+        <Text style={styles.payText}>{phuongThuc === 'tienmat' ? 'XÁC NHẬN ĐẶT LỊCH' : 'THANH TOÁN MOMO'}</Text>
       </TouchableOpacity>
     </View>
   );
