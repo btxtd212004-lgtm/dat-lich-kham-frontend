@@ -128,14 +128,14 @@ export default function KetQuaKhamScreen() {
                       <Text style={styles.value}>{formatDate(item.follow_up_date)}</Text>
                     </View>
                   )}
+                  <TouchableOpacity style={styles.danhGiaBtn}
+                    onPress={() => { setShowDanhGia(item.id); setRating(5); setComment(''); }}>
+                    <Text style={styles.danhGiaBtnText}>⭐ Đánh giá bác sĩ</Text>
+                  </TouchableOpacity>
                 </>
               ) : (
                 <Text style={styles.chuaCoKetQua}>Chưa có kết quả khám</Text>
               )}
-              <TouchableOpacity style={styles.danhGiaBtn}
-                onPress={() => { setShowDanhGia(item.id); setRating(5); setComment(''); }}>
-                <Text style={styles.danhGiaBtnText}>⭐ Đánh giá bác sĩ</Text>
-              </TouchableOpacity>
             </View>
           ))
         ) : (

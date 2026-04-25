@@ -16,23 +16,31 @@ const menuItems = [
 export default function TaiKhoanScreen() {
   const router = useRouter();
   const [userName, setUserName] = useState('');
+  const [userPhone, setUserPhone] = useState('');
 
-useEffect(() => {
-  const loadUser = async () => {
-    const userStr = await AsyncStorage.getItem('user');
-    if (userStr) {
-      const user = JSON.parse(userStr);
-      setUserName(user.full_name || user.phone || '');
-    }
-  };
-  loadUser();
-}, []);
+  useEffect(() => {
+    const loadUser = async () => {
+      const userStr = await AsyncStorage.getItem('user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        setUserName(user.full_name || '');
+        setUserPhone(user.phone || '');
+      }
+    };
+    loadUser();
+  }, []);
+
+  const avatarLetter = userName ? userName.trim().split(' ').pop()?.charAt(0).toUpperCase() || '?' : '?';
 
   return (
     <View style={styles.wrapper}>
       <ScrollView>
         <View style={styles.header}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{avatarLetter}</Text>
+          </View>
           <Text style={styles.name}>{userName || 'Tài khoản'}</Text>
+          {userPhone ? <Text style={styles.phone}>{userPhone}</Text> : null}
         </View>
 
         <View style={styles.section}>
@@ -55,34 +63,7 @@ useEffect(() => {
           <Text style={styles.arrow}>›</Text>
         </TouchableOpacity>
 
-        <View style={styles.hospitalSection}>
-          <View style={styles.hospitalCard}>
-            <View style={styles.hospitalRow}>
-              <Text style={styles.hospitalIcon}>🏢</Text>
-              <View>
-                <Text style={styles.hospitalName}>Bệnh viện Đa khoa ABC</Text>
-                <Text style={styles.hospitalSub}>Chăm sóc sức khỏe toàn diện</Text>
-              </View>
-            </View>
-            <View style={styles.hospitalRow}>
-              <Text style={styles.hospitalIcon}>📍</Text>
-              <Text style={styles.hospitalInfo}>123 Đường Nguyễn Văn Linh, Quận 7, TP.HCM</Text>
-            </View>
-            <View style={styles.hospitalRow}>
-              <Text style={styles.hospitalIcon}>📞</Text>
-              <Text style={styles.hospitalInfo}>Hotline: 1900 2115</Text>
-            </View>
-            <View style={styles.hospitalRow}>
-              <Text style={styles.hospitalIcon}>🕐</Text>
-              <Text style={styles.hospitalInfo}>Thứ 2 - Thứ 6: 7:00 - 17:00{'\n'}Thứ 7 - Chủ nhật: 7:00 - 12:00</Text>
-            </View>
-            <View style={styles.hospitalRow}>
-              <Text style={styles.hospitalIcon}>🌐</Text>
-              <Text style={styles.hospitalInfo}>www.benhvienabc.vn</Text>
-            </View>
-          </View>
-        </View>
-
+        <View style={{ height: 20 }} />
       </ScrollView>
 
       <View style={styles.tabBar}>
@@ -97,8 +78,8 @@ useEffect(() => {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.tabItem} onPress={() => router.push('/thongbao')}>
-          <Text style={styles.tabIcon}>🔔</Text>
-          <Text style={styles.tabText}>Thông báo</Text>
+          <Text style={styles.tabIcon}>📅</Text>
+          <Text style={styles.tabText}>Lịch khám</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.tabItem}>
@@ -112,8 +93,11 @@ useEffect(() => {
 
 const styles = StyleSheet.create({
   wrapper: { flex: 1, backgroundColor: '#f5f5f5' },
-  header: { backgroundColor: '#1a73e8', padding: 40, alignItems: 'center', paddingTop: 60 },
-  name: { fontSize: 22, fontWeight: 'bold', color: '#fff' },
+  header: { backgroundColor: '#1a73e8', paddingTop: 60, paddingBottom: 28, alignItems: 'center' },
+  avatar: { width: 70, height: 70, borderRadius: 35, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
+  avatarText: { fontSize: 28, fontWeight: 'bold', color: '#1a73e8' },
+  name: { fontSize: 20, fontWeight: 'bold', color: '#fff' },
+  phone: { fontSize: 14, color: '#c8e0ff', marginTop: 4 },
   section: { backgroundColor: '#fff', marginTop: 16, borderTopWidth: 1, borderBottomWidth: 1, borderColor: '#eee' },
   menuItem: { flexDirection: 'row', alignItems: 'center', padding: 16, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
   menuIcon: { fontSize: 22, marginRight: 14 },
@@ -123,11 +107,4 @@ const styles = StyleSheet.create({
   tabItem: { flex: 1, alignItems: 'center' },
   tabIcon: { fontSize: 22 },
   tabText: { fontSize: 11, color: '#999', marginTop: 2 },
-  hospitalSection: { marginTop: 8, marginBottom: 8 },
-hospitalCard: { backgroundColor: '#1a73e8', padding: 16 },
-hospitalRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 6 },
-hospitalIcon: { fontSize: 14, marginRight: 8, marginTop: 2 },
-hospitalName: { fontSize: 13, fontWeight: 'bold', color: '#fff' },
-hospitalSub: { fontSize: 11, color: '#c8e0ff', marginTop: 1 },
-hospitalInfo: { fontSize: 12, color: '#fff', flex: 1 },
 });

@@ -15,7 +15,8 @@ export default function MomoPayScreen() {
     gio: string;
     buoi: string;
     gia: string;
-    scheduleId: string;
+    profileId: string;
+    phuongThuc: string;
   }>();
 
   const [profile, setProfile] = useState<any>(null);
@@ -45,7 +46,6 @@ export default function MomoPayScreen() {
         setProfile(p || null);
       }
     } catch (err) {
-      console.log(err);
     } finally {
       setLoading(false);
     }

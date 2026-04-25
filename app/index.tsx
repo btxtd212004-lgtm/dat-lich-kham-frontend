@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { API_URL } from '../constants/api';
@@ -12,8 +12,28 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [checkingToken, setCheckingToken] = useState(true);
 
   const phoneValid = /^0\d{9}$/.test(phone);
+
+  // Auto-login nếu còn token hợp lệ
+  useEffect(() => {
+    const tryAutoLogin = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const userStr = await AsyncStorage.getItem('user');
+        if (token && userStr) {
+          const user = JSON.parse(userStr);
+          if (user.role === 'admin') router.replace('/admin');
+          else if (user.role === 'doctor') router.replace('/doctor');
+          else router.replace('/home');
+          return;
+        }
+      } catch {}
+      setCheckingToken(false);
+    };
+    tryAutoLogin();
+  }, []);
 
   const registerPushToken = async (token: string) => {
     try {
@@ -27,7 +47,7 @@ export default function LoginScreen() {
         body: JSON.stringify({ expo_push_token: pushToken.data }),
       });
     } catch (err) {
-      console.log('Push token error:', err);
+      // push token không bắt buộc, bỏ qua lỗi
     }
   };
 
@@ -60,6 +80,14 @@ export default function LoginScreen() {
       setLoading(false);
     }
   };
+
+  if (checkingToken) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#1a73e8" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

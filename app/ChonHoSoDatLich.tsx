@@ -25,7 +25,6 @@ export default function ChonHoSoDatLichScreen() {
     buoi: string;
     gia: string;
   }>();
-  console.log('ChonHoSoDatLich scheduleId:', scheduleId);
   useFocusEffect(
     useCallback(() => {
       loadProfile();
@@ -102,7 +101,6 @@ export default function ChonHoSoDatLichScreen() {
                   <TouchableOpacity
                     style={styles.chonBtn}
                     onPress={() => {
-                     console.log('Truyền sang XacNhan - scheduleId:', scheduleId);
                      router.push({ pathname: '/XacNhan', params: { profileId: profile.id, scheduleId, khoa, dichVu, ngay, gio, buoi, gia } });
                     }}
                   >

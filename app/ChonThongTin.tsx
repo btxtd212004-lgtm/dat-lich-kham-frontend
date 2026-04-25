@@ -51,7 +51,6 @@ useEffect(() => {
         })));
       }
     } catch (err) {
-      console.log(err);
     }
   };
   loadDepartments();
@@ -274,9 +273,9 @@ useEffect(() => {
                       month === today.getMonth() &&
                       year === today.getFullYear();
                     return (
-                      <TouchableOpacity key={day} style={[styles.dayCell, isToday && styles.today, !valid && styles.disabledDay]}
+                      <TouchableOpacity key={day} style={[styles.dayCell, !valid && styles.disabledDay]}
                         onPress={() => { if (valid) { setSelectedNgay(dateStr); setExpandNgay(false); if (selectedCK) loadSchedules(selectedCK.id, dateStr); } }} disabled={!valid}>
-                        <Text style={[styles.dayText, isToday && styles.todayText, !valid && styles.disabledDayText]}>{day}</Text>
+                        <Text style={[styles.dayText, isToday && { textDecorationLine: 'underline' }, !valid && styles.disabledDayText]}>{day}</Text>
                       </TouchableOpacity>
                     );
                   })}
@@ -406,7 +405,6 @@ useEffect(() => {
               <Text style={[styles.summaryValue, { color: '#e8a01a' }]}>{selectedDV?.gia} VND</Text>
             </View>
             <TouchableOpacity style={styles.confirmBtn} onPress={() => {
-              console.log('selectedGio:', JSON.stringify(selectedGio));
               router.push({
                 pathname: '/ChonHoSoDatLich',
                 params: {

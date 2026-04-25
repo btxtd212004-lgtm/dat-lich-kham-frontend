@@ -19,7 +19,6 @@ export default function ThanhToanScreen() {
     buoi: string;
     gia: string;
   }>();
-  console.log('scheduleId:', scheduleId);
   const datLich = async () => {
     try {
       setLoading(true);

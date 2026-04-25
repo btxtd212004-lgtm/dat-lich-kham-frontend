@@ -8,6 +8,7 @@ export default function LichKhamScreen() {
   const router = useRouter();
   const [lichKhams, setLichKhams] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState<'upcoming' | 'history'>('upcoming');
 
   useFocusEffect(useCallback(() => { loadLichKham(); }, []));
 
@@ -19,26 +20,34 @@ export default function LichKhamScreen() {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       const data = await res.json();
-      if (data.success) {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const filtered = data.data.filter((item: any) => {
-          const itemDate = new Date(item.date);
-          itemDate.setHours(0, 0, 0, 0);
-          return itemDate >= today;
-        });
-        setLichKhams(filtered);
-      }
+      if (data.success) setLichKhams(data.data);
       else setLichKhams([]);
     } catch { setLichKhams([]); }
     finally { setLoading(false); }
   };
 
+  const upcomingList = lichKhams.filter((item: any) => {
+    if (item.status === 'cancelled') return false;
+    const itemDate = new Date(item.date);
+    itemDate.setHours(0, 0, 0, 0);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    return itemDate >= today;
+  });
+
+  const historyList = lichKhams.filter((item: any) => {
+    if (item.status === 'cancelled') return true;
+    const itemDate = new Date(item.date);
+    itemDate.setHours(23, 59, 59, 999);
+    return itemDate < new Date();
+  });
+
+  const displayList = tab === 'upcoming' ? upcomingList : historyList;
+
   const huyLich = async (id: number, paymentMethod: string) => {
     const hoantien = paymentMethod === 'momo'
       ? 'Vì bạn đã thanh toán qua MoMo, vui lòng liên hệ quầy lễ tân để được hoàn tiền.'
       : paymentMethod === 'cash'
-      ? 'Vì bạn đã chọn thanh toán tại quầy, vui lòng liên hệ nhân viên để xử lý.'
+      ? 'Phí khám (nếu đã thanh toán) sẽ được hoàn tại quầy lễ tân.'
       : '';
 
     Alert.alert(
@@ -54,7 +63,7 @@ export default function LichKhamScreen() {
             });
             const data = await res.json();
             if (data.success) loadLichKham();
-            else Alert.alert('Lỗi', data.message);
+            else Alert.alert('Không thể hủy', data.message);
           } catch { Alert.alert('Lỗi', 'Không kết nối được server!'); }
         }},
       ]
@@ -80,11 +89,21 @@ export default function LichKhamScreen() {
         <Text style={styles.headerTitle}>Lịch khám</Text>
       </View>
 
+      {/* Tabs */}
+      <View style={styles.tabs}>
+        <TouchableOpacity style={[styles.tab, tab === 'upcoming' && styles.tabActive]} onPress={() => setTab('upcoming')}>
+          <Text style={[styles.tabText, tab === 'upcoming' && styles.tabTextActive]}>Sắp tới ({upcomingList.length})</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.tab, tab === 'history' && styles.tabActive]} onPress={() => setTab('history')}>
+          <Text style={[styles.tabText, tab === 'history' && styles.tabTextActive]}>Lịch sử ({historyList.length})</Text>
+        </TouchableOpacity>
+      </View>
+
       <ScrollView style={styles.container}>
         {loading ? (
           <ActivityIndicator size="large" color="#1a73e8" style={{ marginTop: 50 }} />
-        ) : lichKhams.length > 0 ? (
-          lichKhams.map((item, index) => {
+        ) : displayList.length > 0 ? (
+          displayList.map((item, index) => {
             const st = getStatus(item);
             return (
               <View key={`${item.id}-${index}`} style={styles.card}>
@@ -111,7 +130,6 @@ export default function LichKhamScreen() {
                   <Text style={styles.infoValue}>{formatDate(item.date)} | {item.start_time?.slice(0,5)} – {item.end_time?.slice(0,5)}</Text>
                 </View>
 
-                {/* Nút theo dõi STT (chỉ show khi đang chờ) */}
                 {item.status === 'waiting' && (
                   <TouchableOpacity
                     style={styles.trackBtn}
@@ -141,28 +159,32 @@ export default function LichKhamScreen() {
         ) : (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyIcon}>📅</Text>
-            <Text style={styles.emptyTitle}>Chưa có lịch khám nào</Text>
-            <Text style={styles.emptyDesc}>Bấm Đặt lịch để đặt lịch khám</Text>
-            <TouchableOpacity style={styles.datLichBtn} onPress={() => router.push('/Datlich')}>
-              <Text style={styles.datLichText}>Đặt lịch ngay</Text>
-            </TouchableOpacity>
+            <Text style={styles.emptyTitle}>{tab === 'upcoming' ? 'Chưa có lịch khám sắp tới' : 'Chưa có lịch sử khám'}</Text>
+            {tab === 'upcoming' && (
+              <>
+                <Text style={styles.emptyDesc}>Bấm Đặt lịch để đặt lịch khám</Text>
+                <TouchableOpacity style={styles.datLichBtn} onPress={() => router.push('/Datlich')}>
+                  <Text style={styles.datLichText}>Đặt lịch ngay</Text>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         )}
       </ScrollView>
 
       <View style={styles.tabBar}>
         <TouchableOpacity style={styles.tabItem} onPress={() => router.push('/home')}>
-          <Text style={styles.tabIcon}>🏠</Text><Text style={styles.tabText}>Trang chủ</Text>
+          <Text style={styles.tabIcon}>🏠</Text><Text style={styles.tabBarText}>Trang chủ</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.tabItem} onPress={() => router.push({ pathname: '/ChonHoSo', params: { mode: 'quanly' } })}>
-          <Text style={styles.tabIcon}>👤</Text><Text style={styles.tabText}>Hồ sơ</Text>
+          <Text style={styles.tabIcon}>👤</Text><Text style={styles.tabBarText}>Hồ sơ</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.tabItem}>
           <Text style={styles.tabIcon}>📅</Text>
-          <Text style={[styles.tabText, { color: '#1a73e8', fontWeight: 'bold' }]}>Lịch khám</Text>
+          <Text style={[styles.tabBarText, { color: '#1a73e8', fontWeight: 'bold' }]}>Lịch khám</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.tabItem} onPress={() => router.push('/taikhoan')}>
-          <Text style={styles.tabIcon}>⚙️</Text><Text style={styles.tabText}>Tài khoản</Text>
+          <Text style={styles.tabIcon}>⚙️</Text><Text style={styles.tabBarText}>Tài khoản</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -173,6 +195,11 @@ const styles = StyleSheet.create({
   wrapper: { flex: 1, backgroundColor: '#f5f5f5' },
   header: { backgroundColor: '#1a73e8', padding: 16, paddingTop: 50, alignItems: 'center' },
   headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#fff' },
+  tabs: { flexDirection: 'row', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#eee' },
+  tab: { flex: 1, paddingVertical: 12, alignItems: 'center', borderBottomWidth: 2, borderBottomColor: 'transparent' },
+  tabActive: { borderBottomColor: '#1a73e8' },
+  tabText: { fontSize: 14, color: '#999' },
+  tabTextActive: { color: '#1a73e8', fontWeight: 'bold' },
   container: { flex: 1, padding: 16 },
   card: { backgroundColor: '#fff', borderRadius: 12, padding: 16, marginBottom: 12 },
   cardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
@@ -197,5 +224,5 @@ const styles = StyleSheet.create({
   tabBar: { flexDirection: 'row', backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#eee', paddingVertical: 8, paddingBottom: 20 },
   tabItem: { flex: 1, alignItems: 'center' },
   tabIcon: { fontSize: 22 },
-  tabText: { fontSize: 11, color: '#999', marginTop: 2 },
+  tabBarText: { fontSize: 11, color: '#999', marginTop: 2 },
 });

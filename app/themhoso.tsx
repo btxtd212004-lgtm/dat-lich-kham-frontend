@@ -98,7 +98,6 @@ export default function ThemHoSoScreen() {
         }
       }
     } catch (err) {
-      console.log(err);
     }
   };
 
