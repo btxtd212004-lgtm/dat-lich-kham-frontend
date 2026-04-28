@@ -19,6 +19,7 @@ export default function DoctorScreen() {
   const [prescription, setPrescription] = useState('');
   const [recordNotes, setRecordNotes] = useState('');
   const [savingRecord, setSavingRecord] = useState(false);
+  const [patientHistory, setPatientHistory] = useState<any[]>([]);
 
   const getToken = () => AsyncStorage.getItem('token');
 
@@ -62,14 +63,14 @@ export default function DoctorScreen() {
     setDiagnosis(appt.diagnosis || '');
     setPrescription('');
     setRecordNotes('');
+    setPatientHistory([]);
     setShowRecord(true);
-    // Load đầy đủ bệnh án nếu đã có
+    const token = await getToken();
+    const headers = { 'Authorization': `Bearer ${token}` };
+    // Load bệnh án hiện tại nếu đã có
     if (appt.record_id) {
       try {
-        const token = await getToken();
-        const res = await fetch(`${API_URL}/api/doctor/appointments/${appt.id}/record`, {
-          headers: { 'Authorization': `Bearer ${token}` },
-        });
+        const res = await fetch(`${API_URL}/api/doctor/appointments/${appt.id}/record`, { headers });
         const data = await res.json();
         if (data.success) {
           setDiagnosis(data.data.diagnosis || '');
@@ -78,6 +79,15 @@ export default function DoctorScreen() {
         }
       } catch {}
     }
+    // Load lịch sử khám cũ của bệnh nhân này (các lần khám khác, đã xong)
+    try {
+      const res = await fetch(
+        `${API_URL}/api/doctor/patient-history/${appt.profile_id}?exclude=${appt.id}`,
+        { headers }
+      );
+      const data = await res.json();
+      if (data.success) setPatientHistory(data.data || []);
+    } catch {}
   };
 
   const saveRecord = async () => {
@@ -263,6 +273,31 @@ export default function DoctorScreen() {
               multiline
             />
 
+            {/* Lịch sử khám cũ */}
+            {patientHistory.length > 0 && (
+              <View style={{ marginTop: 20 }}>
+                <Text style={[styles.fieldLabel, { fontSize: 15, color: '#1a73e8' }]}>
+                  📂 Lịch sử khám ({patientHistory.length} lần)
+                </Text>
+                {patientHistory.map((h: any, i: number) => (
+                  <View key={i} style={styles.historyItem}>
+                    <Text style={styles.historyDate}>
+                      📅 {h.date}  •  {h.department_name}
+                    </Text>
+                    {h.diagnosis ? (
+                      <Text style={styles.historyText}>🩺 {h.diagnosis}</Text>
+                    ) : null}
+                    {h.prescription ? (
+                      <Text style={styles.historyText}>💊 {h.prescription}</Text>
+                    ) : null}
+                    {h.notes ? (
+                      <Text style={styles.historyText}>📝 {h.notes}</Text>
+                    ) : null}
+                  </View>
+                ))}
+              </View>
+            )}
+
             <View style={{ flexDirection: 'row', gap: 10, marginTop: 8 }}>
               <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#eee', flex: 1 }]} onPress={() => setShowRecord(false)}>
                 <Text style={{ textAlign: 'center', color: '#333', fontWeight: 'bold' }}>Huỷ</Text>
@@ -309,6 +344,9 @@ const styles = StyleSheet.create({
   callBtnText: { color: '#fff', fontSize: 14, fontWeight: 'bold' },
   recordBtn: { backgroundColor: '#e8f5e9', borderRadius: 8, padding: 10, alignItems: 'center', marginTop: 8 },
   recordBtnText: { color: '#2e7d32', fontSize: 14, fontWeight: 'bold' },
+  historyItem: { backgroundColor: '#f0f6ff', borderRadius: 8, padding: 12, marginBottom: 8, borderLeftWidth: 3, borderLeftColor: '#1a73e8' },
+  historyDate: { fontSize: 13, fontWeight: 'bold', color: '#1a73e8', marginBottom: 4 },
+  historyText: { fontSize: 13, color: '#333', marginTop: 2, lineHeight: 18 },
   emptyBox: { alignItems: 'center', paddingTop: 60 },
   emptyTitle: { fontSize: 17, fontWeight: 'bold', color: '#333', marginTop: 12 },
   emptyText: { fontSize: 14, color: '#999', marginTop: 6, textAlign: 'center' },
