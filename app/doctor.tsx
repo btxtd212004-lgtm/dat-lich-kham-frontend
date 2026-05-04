@@ -143,11 +143,13 @@ export default function DoctorScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Stats bar */}
+{/* Stats bar */}
       <View style={styles.statsRow}>
         <View style={[styles.statBox, { backgroundColor: '#fff3e0' }]}>
-          <Text style={styles.statNum}>{currentQueue}</Text>
-          <Text style={styles.statLbl}>Đang gọi</Text>
+          <Text style={styles.statNum}>
+            {inProgress.length > 0 ? `#${inProgress[0].queue_number}` : '-'}
+          </Text>
+          <Text style={styles.statLbl}>Số đang gọi</Text>
         </View>
         <View style={[styles.statBox, { backgroundColor: '#e3f2fd' }]}>
           <Text style={styles.statNum}>{waitingList.length}</Text>
