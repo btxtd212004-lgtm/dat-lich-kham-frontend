@@ -145,19 +145,9 @@ export default function DoctorScreen() {
 
 {/* Stats bar */}
       <View style={styles.statsRow}>
-        <View style={[styles.statBox, { backgroundColor: '#fff3e0' }]}>
-          <Text style={styles.statNum}>
-            {inProgress.length > 0 ? `#${inProgress[0].queue_number}` : '-'}
-          </Text>
-          <Text style={styles.statLbl}>Số đang gọi</Text>
-        </View>
         <View style={[styles.statBox, { backgroundColor: '#e3f2fd' }]}>
           <Text style={styles.statNum}>{waitingList.length}</Text>
           <Text style={styles.statLbl}>Chờ khám</Text>
-        </View>
-        <View style={[styles.statBox, { backgroundColor: '#fce4ec' }]}>
-          <Text style={styles.statNum}>{inProgress.length}</Text>
-          <Text style={styles.statLbl}>Đang khám</Text>
         </View>
         <View style={[styles.statBox, { backgroundColor: '#e8f5e9' }]}>
           <Text style={styles.statNum}>{doneList.length}</Text>
